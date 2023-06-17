@@ -51,6 +51,7 @@ def recommend_hotels_endpoint(k: int) -> List[Dict]:
                 "longitude": hotel[1],
                 "name": match['name'].values[0],  # Assuming the DataFrame has a column named 'hotel_name'
                 "rating": match['ratings'].values[0],  # Assuming the DataFrame has a column named 'ratings'
+                "small_photo": match['small_photo'].values[0],
                 # Add more hotel information as needed
             }
             place_json.append(hotel_info)
