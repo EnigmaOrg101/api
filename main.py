@@ -4,8 +4,18 @@ from fastapi import FastAPI
 from typing import List, Dict, Union
 from popularityBased import recommend_places, given_coordinates, hotel_list, df_copy_popular
 from contentBased import content_recommend
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/recommend_hotels", response_model=List[Dict[str, Union[str, str]]])
