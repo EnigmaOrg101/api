@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import math
 from fastapi import FastAPI
 from typing import List, Dict, Union
 from popularityBased import recommend_places, given_coordinates, hotel_list, df_copy_popular
@@ -79,6 +80,73 @@ def recommend_hotels_endpoint() -> List[Dict]:
         content_place_json.append(place_info)
 
     return content_place_json
+
+
+@app.get("/calc", response_model=List[Dict])
+def calculate_distance():
+    # Convert degrees to radians
+    def calc_dist(lat1, lon1, lat2, lon2):
+        lat1 = math.radians(lat1)
+        lon1 = math.radians(lon1)
+        lat2 = math.radians(lat2)
+        lon2 = math.radians(lon2)
+
+        # Radius of the Earth (in kilometers)
+        radius = 6371
+
+        # Haversine formula
+        dlat = lat2 - lat1
+        dlon = lon2 - lon1
+        a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2) * math.sin(dlon/2)
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+        distance = radius * c
+
+        return distance
+
+# Open the CSV file
+# with open('coordinates.csv', 'r') as file:
+#     reader = csv.DictReader(file)
+    df = pd.read_csv('./output_AFMT_ID.csv')
+    dif = []
+    df['coordinates'] = df.apply(lambda row: (row['latitude'], row['longitude']), axis=1)
+
+    for row in df['coordinates']:
+        # print(row[0])
+        # Iterate over each row in the CSV file
+    #     for row in reader:
+    #         # Get the latitude and longitude values from the row
+        lat2 = float(row[0])
+        lon2 = float(row[1])
+
+    #         # Coordinates of the first point (New York City)
+        lat1 = 27.706821
+        lon1 = 85.340765
+
+    #         # Calculate the distance
+        distance = calc_dist(lat1, lon1, lat2, lon2)
+        if distance < 7:
+            dif.append(row)
+    #         # Check if the distance is smaller than 7 kilometers
+    
+    content_place_json = []  
+                # print(row)  # Print the row or perform any desired action
+    for x in dif:
+        match = df[(df['latitude'] == x[0]) & (df['longitude'] == x[1])]
+        if not match.empty:
+            place_info = {
+                "latitude": x[0],
+                "longitude": x[1],
+                "name": df['name'].values[0],  # Assuming the DataFrame has a column named 'hotel_name'
+                "rating": df['ratings'].values[0],
+                "type": df['type'].values[0],
+                "small_photo": df['small_photo'].values[0],
+                "category": df['category'].values[0],
+                # Add more hotel information as needed
+            }
+            content_place_json.append(place_info)
+
+    return content_place_json
+
 
 if __name__ == "__main__":
     port = int(getenv("PORT", 8000))
