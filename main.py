@@ -136,11 +136,11 @@ def calculate_distance():
             place_info = {
                 "latitude": x[0],
                 "longitude": x[1],
-                "name": df['name'].values[0],  # Assuming the DataFrame has a column named 'hotel_name'
-                "rating": df['ratings'].values[0],
-                "type": df['type'].values[0],
-                "small_photo": df['small_photo'].values[0],
-                "category": df['category'].values[0],
+                "name": match['name'].values[0],  # Assuming the DataFrame has a column named 'hotel_name'
+                "rating": match['ratings'].values[0],
+                "type": match['type'].values[0],
+                "small_photo": match['small_photo'].values[0],
+                "category": match['category'].values[0],
                 # Add more hotel information as needed
             }
             content_place_json.append(place_info)
