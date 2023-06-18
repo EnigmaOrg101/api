@@ -137,9 +137,9 @@ def calculate_distance() -> List[Dict]:
             # Add more hotel information as needed
         }
         content_place_json.append(place_info)
-        print("=====")
-        print(place_info)
-        print("-----")
+        # print("=====")
+        # print(place_info)
+        # print("-----")
     # print("HRRT",content_place_json)
     return content_place_json
 
