@@ -22,6 +22,7 @@ app.add_middleware(
 
 @app.get("/recommend_hotels", response_model=List[Dict[str, Union[str, str]]])
 def recommend_hotels_endpoint() -> List[Dict[str, Union[str, str]]]:
+    df = pd.read_csv('./output_hotels.csv')
     all_hotels_json = []
     for hotel in df.values:
         hotel_info = {
